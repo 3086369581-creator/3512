@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>私有网站 · 自用空间</title>
+  <!-- 使用简洁的深色风格，纯静态，无外部依赖 (除了字体) -->
+  <style>
+    /* 全局重置 & 字体 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0b0e14;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      color: #e6edf3;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1.5rem;
+    }
+
+    /* 主容器——限制宽度，柔和卡片感 */
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      flex: 1;
+    }
+
+    /* 导航栏 */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #7c9eff, #b18cff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: #8b949e;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      padding: 0.25rem 0;
+      border-bottom: 2px solid transparent;
+    }
+
+    .nav-links a:hover {
+      color: #e6edf3;
+      border-bottom-color: #7c9eff;
+    }
+
+    /* 主视觉区域：欢迎语 + 动态问候 */
+    .hero {
+      margin-bottom: 3rem;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #7c9eff, #b18cff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: #8b949e;
+      font-size: 1.2rem;
+      max-width: 600px;
+      border-left: 3px solid #7c9eff;
+      padding-left: 1.2rem;
+      margin-top: 0.5rem;
+    }
+
+    /* 卡片网格 — 私有内容区块 */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin: 3rem 0 2.5rem;
+    }
+
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 20px;
+      padding: 1.8rem 1.5rem;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .card:hover {
+      border-color: #7c9eff;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -8px rgba(124, 158, 255, 0.25);
+    }
+
+    .card-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #e6edf3;
+    }
+
+    .card p {
+      color: #8b949e;
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+      line-height: 1.5;
+    }
+
+    .card-link {
+      display: inline-block;
+      color: #7c9eff;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border-bottom: 1px dashed #7c9eff;
+      padding-bottom: 2px;
+      transition: opacity 0.2s;
+    }
+
+    .card-link:hover {
+      opacity: 0.8;
+    }
+
+    /* 时间显示 / 动态状态面板 */
+    .status-panel {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      padding: 1.6rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin: 2rem 0;
+    }
+
+    .time-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .time-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #8b949e;
+      margin-bottom: 0.25rem;
+    }
+
+    .time-value {
+      font-size: 1.8rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: #e6edf3;
+      line-height: 1.2;
+    }
+
+    .date-value {
+      font-size: 1.1rem;
+      color: #8b949e;
+      font-weight: 400;
+    }
+
+    .status-badge {
+      background: #1f6feb20;
+      border: 1px solid #1f6feb;
+      color: #7c9eff;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      background: #3fb950;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #3fb950;
+    }
+
+    /* 页脚 */
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #30363d;
+      text-align: center;
+      color: #6e7681;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer a {
+      color: #8b949e;
+      text-decoration: none;
+      border-bottom: 1px dotted #8b949e;
+    }
+
+    .footer a:hover {
+      color: #e6edf3;
+    }
+
+    /* 响应式调整 */
+    @media (max-width: 600px) {
+      body {
+        padding: 1.5rem 1rem;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .status-panel {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.2rem;
+      }
+
+      .time-value {
+        font-size: 1.5rem;
+      }
+
+      .footer {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    /* 细微的动画 */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero, .grid, .status-panel {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .grid {
+      animation-delay: 0.1s;
+    }
+
+    .status-panel {
+      animation-delay: 0.2s;
+    }
+
+    /* 自定义滚动条 */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0e14;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #30363d;
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #7c9eff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+      <a href="#" class="logo">🔒 私有空间</a>
+      <div class="nav-links">
+        <a href="#">首页</a>
+        <a href="#">文件</a>
+        <a href="#">笔记</a>
+        <a href="#">设置</a>
+      </div>
+    </nav>
+
+    <!-- 主视觉 -->
+    <div class="hero">
+      <h1>欢迎回来，<span>私有</span>领地</h1>
+      <p>仅限内部访问 · 个人工作区 · 安全便捷</p>
+    </div>
+
+    <!-- 卡片网格 (模拟私有功能入口) -->
+    <div class="grid">
+      <div class="card">
+        <div class="card-icon">📁</div>
+        <h3>我的文件</h3>
+        <p>存储私人文档、图片和备份，仅自己可访问。</p>
+        <a href="#" class="card-link">打开目录 →</a>
+      </div>
+      <div class="card">
+        <div class="card-icon">📝</div>
+        <h3>私人笔记</h3>
+        <p>快速记录想法、待办事项和灵感，本地保存。</p>
+        <a href="#" class="card-link">查看笔记 →</a>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚙️</div>
+        <h3>控制面板</h3>
+        <p>管理网站配置、隐私选项和访问权限。</p>
+        <a href="#" class="card-link">进入设置 →</a>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>使用统计</h3>
+        <p>简单查看当前存储用量和最近活动。</p>
+        <a href="#" class="card-link">查看统计 →</a>
+      </div>
+    </div>
+
+    <!-- 动态时间状态面板（增加互动感） -->
+    <div class="status-panel">
+      <div class="time-block">
+        <span class="time-label">当前时间</span>
+        <span class="time-value" id="liveClock">--:--:--</span>
+        <span class="date-value" id="liveDate">加载中...</span>
+      </div>
+      <div class="status-badge">
+        <span class="status-dot"></span> 私有连接 · 已保护
+      </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+      <div>© 2025 私有网站 · 仅限授权使用</div>
+      <div><a href="#">隐私条款</a> · <a href="#">安全说明</a> · <a href="#">联系管理员</a></div>
+    </footer>
+  </div>
+
+  <!-- 动态时钟脚本 (纯静态，无后端但展示可用) -->
+  <script>
+    (function updateClock() {
+      const now = new Date();
+
+      // 时间格式化 HH:MM:SS
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const timeString = `${hours}:${minutes}:${seconds}`;
+
+      // 日期格式化 YYYY年MM月DD日 周几
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1; // 0索引
+      const day = now.getDate();
+      const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+      const weekday = weekdays[now.getDay()];
+
+      // 中文日期格式
+      const dateString = `${year}年${month}月${day}日 ${weekday}`;
+
+      // 更新 DOM
+      const clockEl = document.getElementById('liveClock');
+      const dateEl = document.getElementById('liveDate');
+      if (clockEl) clockEl.textContent = timeString;
+      if (dateEl) dateEl.textContent = dateString;
+
+      // 每秒更新
+      setTimeout(updateClock, 1000);
+    })();
+
+    // 可选：添加控制台欢迎消息 (体现私有属性)
+    console.log('%c🔐 私有网站已启动 · 仅限授权访问', 'color: #7c9eff; font-size: 14px; font-weight: bold;');
+  </script>
+
+  <!-- 说明：所有链接均为占位符(#)，实际使用时可以替换为自己的页面。
+       整个网站完全自包含，无任何外部请求(字体为系统默认)，安全私有。 -->
+</body>
+</html>
